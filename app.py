@@ -13,17 +13,24 @@ DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 if not DISCORD_WEBHOOK_URL:
     raise RuntimeError("DISCORD_WEBHOOK_URL saknas i .env-filen!")
 
-app = FastAPI()
+app = FastAPI(
+    title="Discord Proxy",
+    description="Internt API för att skicka notifieringar via Discord",
+    version="1.0.0",
+    root_path="/api/discord",
+)
+
 
 class Message(BaseModel):
     text: str
+
 
 @app.post("/send")
 def send_to_discord(msg: Message):
     payload = {"content": msg.text}
     response = requests.post(DISCORD_WEBHOOK_URL, json=payload)
-    
+
     if response.status_code not in [200, 204]:
         raise HTTPException(status_code=500, detail="Kunde inte skicka till Discord")
-    
+
     return {"status": "skickat"}
