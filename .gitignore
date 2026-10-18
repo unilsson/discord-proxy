@@ -1,6 +1,7 @@
 # Miljövariabler och hemligheter
 .env
 .env.*
+!.env.example
 *.env
 secrets/
 
